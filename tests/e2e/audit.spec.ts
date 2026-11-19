@@ -51,6 +51,8 @@ test("the database itself refuses audit updates, deletes and out-of-chain insert
 
   expect(d1Error(`UPDATE audit_log SET detail = 'tampered' WHERE sandbox_id = '${sid}' AND seq = 1`)).toContain("append-only: updates are not allowed");
   expect(d1Error(`DELETE FROM audit_log WHERE sandbox_id = '${sid}' AND seq = 1`)).toContain("append-only: deletes are not allowed");
+  // The production desk row cannot be deleted either, so its audit rows can never be unlocked for deletion.
+  expect(d1Error(`DELETE FROM sandboxes WHERE id = 'main'`)).toContain("production desk cannot be deleted");
   // Re-using an existing seq, skipping ahead, or a prev_hash that is not the head's hash.
   expect(d1Error(`INSERT INTO audit_log (sandbox_id, seq, at, actor, role, action, ref, detail, prev_hash, hash) VALUES ('${sid}', 1, 0, 'x', 'staff', 'x', NULL, '', 'GENESIS', '${fakeHash}')`)).toContain("does not extend the chain");
   expect(d1Error(`INSERT INTO audit_log (sandbox_id, seq, at, actor, role, action, ref, detail, prev_hash, hash) VALUES ('${sid}', 999, 0, 'x', 'staff', 'x', NULL, '', 'GENESIS', '${fakeHash}')`)).toContain("does not extend the chain");

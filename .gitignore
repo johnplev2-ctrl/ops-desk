@@ -10,3 +10,4 @@ blob-report/
 *.log
 .DS_Store
 worker-configuration.d.ts
+qa/

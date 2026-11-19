@@ -58,6 +58,8 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+/* Components set display (e.g. .btn is inline-flex); the hidden attribute must still win. */
+[hidden] { display: none !important; }
 
 html { -webkit-text-size-adjust: 100%; }
 
@@ -191,7 +193,7 @@ button, input, textarea, select { font: inherit; color: inherit; }
 
 /* ---------- filters ---------- */
 
-.filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 14px; scrollbar-width: thin; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
 .filters a {
   flex: none; padding: 6px 12px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--paper);
   text-decoration: none; font-size: 0.875rem; white-space: nowrap;
@@ -431,7 +433,11 @@ textarea.input { min-height: 96px; resize: vertical; }
 @media (min-width: 1000px) {
   .split { grid-template-columns: minmax(340px, 420px) 1fr; align-items: start; }
   .split.has-detail .list-pane, .split:not(.has-detail) .detail-pane { display: block; }
-  .detail-empty { display: grid; place-items: center; min-height: 320px; padding: 24px; border: 2px dashed var(--rule); border-radius: 12px; color: var(--ink-2); text-align: center; }
+  .detail-empty { display: block; padding: 28px 32px; border: 2px dashed var(--rule); border-radius: 12px; color: var(--ink-2); }
+  .detail-empty h2 { margin: 0 0 14px; font-size: 1.125rem; color: var(--ink); }
+  .detail-empty .steps { margin: 0 0 16px; padding-left: 1.4em; display: grid; gap: 10px; line-height: 1.45; }
+  .detail-empty .steps b { color: var(--ink); }
+  .detail-empty p { margin: 0; }
   .detail-pane { position: sticky; top: 16px; }
   .back { display: none; }
   .sheet-title { padding-right: 180px; }

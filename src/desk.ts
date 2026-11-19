@@ -50,6 +50,7 @@ export interface Ctx {
 
 export interface WriteResult {
   alerts: Array<{ id: number; alert: NewAlert }>;
+  rowsWritten: number;
 }
 
 const STATUS_WORD: Record<RequestRow["status"], string> = {
@@ -152,10 +153,12 @@ async function commit(
     }
     throw err;
   }
-  log("info", "write", { action: events[0]?.action, rowsWritten: results.reduce((n, r) => n + (r.meta?.rows_written ?? 0), 0) });
+  const rowsWritten = results.reduce((n, r) => n + (r.meta?.rows_written ?? 0), 0);
+  log("info", "write", { action: events[0]?.action, rowsWritten });
   const alertResults = results.slice(statements.length + entries.length, statements.length + entries.length + alertStmts.length);
   return {
     alerts: alertResults.map((r, i) => ({ id: (r.results[0] as { id: number }).id, alert: alerts[i] })),
+    rowsWritten,
   };
 }
 
@@ -242,7 +245,7 @@ export async function createRequest(c: Ctx, body: Record<string, unknown>, tz: n
     c,
     head,
     stmts,
-    [audit(c, "request.created", ref, `Filed ${kind} request "${title}" with ${items.length} checklist items`)],
+    [audit(c, "request.created", ref, `Filed ${kind} request "${title}" with ${items.length} checklist ${items.length === 1 ? "item" : "items"}`)],
     alertsFor(c, "created", ref, title),
   );
   return { ref, ...result };
@@ -288,7 +291,7 @@ export async function tick(c: Ctx, ref: number, pos: number, body: Record<string
   if (row.status !== "approved") {
     throw new HttpError(409, "wrong_status", `The checklist opens once R-${ref} is approved. It is ${STATUS_WORD[row.status]}.`);
   }
-  if ((item.done_at !== null) === done) return { alerts: [] }; // already in that state; nothing to record
+  if ((item.done_at !== null) === done) return { alerts: [], rowsWritten: 0 }; // already in that state; nothing to record
   const stmt = c.db
     .prepare(`UPDATE checklist_items SET done_at = ?4, done_by = ?5 WHERE sandbox_id = ?1 AND ref = ?2 AND pos = ?3`)
     .bind(c.sandboxId, ref, pos, done ? c.now : null, done ? c.who.actor : null);
@@ -498,9 +501,10 @@ export function unreadQuery(c: Ctx): D1PreparedStatement {
     .bind(c.sandboxId, c.who.role);
 }
 
-export async function markAlertsRead(c: Ctx): Promise<void> {
-  await c.db
+export async function markAlertsRead(c: Ctx): Promise<number> {
+  const res = await c.db
     .prepare(`UPDATE alerts SET read_at = ?3 WHERE sandbox_id = ?1 AND audience = ?2 AND read_at IS NULL`)
     .bind(c.sandboxId, c.who.role, c.now)
     .run();
+  return res.meta?.rows_written ?? 0;
 }

@@ -19,8 +19,10 @@ const migrate = spawnSync(process.execPath, [wrangler, "d1", "migrations", "appl
 });
 if (migrate.status !== 0) process.exit(migrate.status ?? 1);
 
-// The suite runs against the real wrangler.jsonc limits. Each test context sends its own
-// CF-Connecting-IP header (local dev passes it through), so the per-IP cap is exercised as configured.
+// The suite runs against the real wrangler.jsonc per-network limits. Each test context sends its own
+// CF-Connecting-IP header (local dev passes it through), so the per-IP caps are exercised as configured.
+// TEST_BINDINGS (set in playwright.config.ts) lifts only the all-visitor daily caps, because one suite run
+// is hundreds of visitors; tests/e2e/budget.spec.ts drives those caps by setting their counters directly.
 const bindings = (process.env.TEST_BINDINGS ?? "").split(",").filter(Boolean);
 
 const dev = spawn(

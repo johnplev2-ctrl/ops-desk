@@ -4,7 +4,7 @@ import { adapterName, deliverAlerts, type NewAlert, type OutboundEnv } from "./a
 import * as desk from "./desk";
 import { cookie, errorResponse, HttpError, json, log, readJson, sha256Hex, textFile } from "./http";
 import { DEMO_PERSONAS, isDemo, resolveIdentity, ROLE_COOKIE, ROLES, type Identity, type IdentityEnv, type Role } from "./identity";
-import { currentDesk, maybePurge, openDesk, resetDesk, ttlMs, type Desk, type SandboxEnv } from "./sandbox";
+import { assertWriteBudget, chargeRows, currentDesk, maybePurge, openDesk, resetDesk, ttlMs, type Desk, type SandboxEnv } from "./sandbox";
 import { PHOTO_CAPTIONS, WORKSPACE_NAME } from "./seed";
 import { LIMITS, tzOffset } from "./validate";
 
@@ -83,7 +83,18 @@ async function context(r: Route): Promise<{ c: desk.Ctx; who: Identity; d: Desk 
   };
 }
 
-function afterWrite(r: Route, sandboxId: string, alerts: Array<{ id: number; alert: NewAlert }>): void {
+/** Demo only: refuses the write when today's demo row budget is spent. Call before any write. */
+async function budget(r: Route): Promise<void> {
+  await assertWriteBudget(r.request, r.env, r.now);
+}
+
+function charge(r: Route, rows: number): void {
+  if (rows > 0) r.ctx.waitUntil(chargeRows(r.request, r.env, r.now, rows).catch((err) => log("error", "charge_failed", { message: String(err) })));
+}
+
+function afterWrite(r: Route, sandboxId: string, result: { alerts: Array<{ id: number; alert: NewAlert }>; rowsWritten: number }): void {
+  charge(r, result.rowsWritten);
+  const alerts = result.alerts;
   if (alerts.length && adapterName(r.env) !== "stub") {
     r.ctx.waitUntil(
       deliverAlerts(r.env, sandboxId, alerts).catch((err) => log("error", "alert_delivery_crashed", { message: String(err) })),
@@ -154,8 +165,9 @@ on("GET", "/requests", async (r) => {
 on("POST", "/requests", async (r) => {
   const { c, d } = await context(r);
   const body = await readJson(r.request, LIMITS.bodyBytes);
+  await budget(r);
   const result = await desk.createRequest(c, body, tzOffset(body.tz));
-  afterWrite(r, d.id, result.alerts);
+  afterWrite(r, d.id, result);
   return json({ ref: result.ref }, 201);
 });
 
@@ -167,25 +179,29 @@ on("GET", "/requests/:ref", async (r) => {
 on("POST", "/requests/:ref/decision", async (r) => {
   const { c, d } = await context(r);
   const ref = desk.parseRef(r.params[0]);
-  const result = await desk.decide(c, ref, await readJson(r.request, LIMITS.bodyBytes));
-  afterWrite(r, d.id, result.alerts);
+  const body = await readJson(r.request, LIMITS.bodyBytes);
+  await budget(r);
+  afterWrite(r, d.id, await desk.decide(c, ref, body));
   return json({ ok: true });
 });
 
 on("POST", "/requests/:ref/checklist/:pos", async (r) => {
-  const { c } = await context(r);
+  const { c, d } = await context(r);
   const ref = desk.parseRef(r.params[0]);
   const pos = Number(r.params[1]);
   if (!Number.isInteger(pos) || pos < 1 || pos > LIMITS.checklistItems) throw new HttpError(404, "not_found", "No such checklist item.");
-  await desk.tick(c, ref, pos, await readJson(r.request, LIMITS.bodyBytes));
+  const body = await readJson(r.request, LIMITS.bodyBytes);
+  await budget(r);
+  afterWrite(r, d.id, await desk.tick(c, ref, pos, body));
   return json({ ok: true });
 });
 
 on("POST", "/requests/:ref/complete", async (r) => {
   const { c, d } = await context(r);
   const ref = desk.parseRef(r.params[0]);
-  const result = await desk.complete(c, ref, await readJson(r.request, LIMITS.bodyBytes));
-  afterWrite(r, d.id, result.alerts);
+  const body = await readJson(r.request, LIMITS.bodyBytes);
+  await budget(r);
+  afterWrite(r, d.id, await desk.complete(c, ref, body));
   return json({ ok: true });
 });
 
@@ -226,6 +242,7 @@ on("GET", "/alerts", async (r) => {
 on("POST", "/alerts/read", async (r) => {
   const { c } = await context(r);
   await readJson(r.request, LIMITS.bodyBytes);
-  await desk.markAlertsRead(c);
+  await budget(r);
+  charge(r, await desk.markAlertsRead(c));
   return json({ ok: true });
 });

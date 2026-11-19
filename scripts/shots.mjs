@@ -4,7 +4,7 @@ import { chromium } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 
 const base = process.argv[2] ?? "http://127.0.0.1:8799";
-const out = process.argv[3] ?? "test-results/shots";
+const out = process.argv[3] ?? "qa/shots";
 mkdirSync(out, { recursive: true });
 
 const browser = await chromium.launch({ executablePath: process.env.FV_BROWSER || undefined });
@@ -21,6 +21,8 @@ for (const [w, hgt] of [[390, 844], [1440, 900]]) {
     page.on("pageerror", (e) => errors.push(`${w} ${scheme}: ${e.message}`));
     const shot = async (name) => {
       await page.waitForTimeout(250);
+      // The fixed toast lands mid-page in a full-page capture; hide it (CSSOM, so the CSP still applies).
+      await page.evaluate(() => { const t = document.getElementById("toast"); if (t) t.style.visibility = "hidden"; });
       await page.screenshot({ path: `${out}/${w}-${scheme}-${name}.png`, fullPage: true });
     };
     await page.goto(base + "/#/requests");

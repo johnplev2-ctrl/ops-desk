@@ -24,11 +24,13 @@ export default defineConfig({
     timeout: 180_000,
     stdout: "ignore",
     stderr: "pipe",
-    env: { PORT: String(PORT) },
+    // One suite run is hundreds of "visitors"; lift only the all-visitor daily caps. Per-network caps stay as configured,
+    // and budget.spec.ts drives the all-visitor caps by setting their counters directly.
+    env: { PORT: String(PORT), TEST_BINDINGS: "MAX_NEW_SANDBOXES_PER_DAY=1000000,DEMO_ROWS_PER_DAY=1000000000" },
   },
   projects: [
     { name: "unit", testMatch: /unit\/.*\.spec\.ts/ },
-    { name: "phone", testMatch: /e2e\/(flow|a11y)\.spec\.ts/, use: { viewport: { width: 390, height: 844 } } },
+    { name: "phone", testMatch: /e2e\/(flow|a11y|ui)\.spec\.ts/, use: { viewport: { width: 390, height: 844 } } },
     { name: "desktop", testMatch: /e2e\/.*\.spec\.ts/, use: { viewport: { width: 1440, height: 900 } } },
   ],
 });

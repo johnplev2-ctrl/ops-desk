@@ -169,7 +169,7 @@ export async function seedStatements(db: D1Database, sandboxId: string, now: num
 
     events.push({
       at: at(t.createdAgoH), actor: t.by.name, role: t.by.role, action: "request.created", ref: t.ref,
-      detail: `Filed ${t.kind} request "${t.title}" with ${t.checklist.length} checklist items`,
+      detail: `Filed ${t.kind} request "${t.title}" with ${t.checklist.length} checklist ${t.checklist.length === 1 ? "item" : "items"}`,
     });
     alerts.push(...buildAlerts("created", t.ref, t.title, t.by.name, at(t.createdAgoH)).map((a) => ({ ...a, read: t.createdAgoH > READ_AFTER_H || t.decision !== undefined })));
     if (t.decision) {

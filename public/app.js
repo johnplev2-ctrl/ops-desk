@@ -127,7 +127,8 @@ function relDue(r, now) {
   const days = Math.round(Math.abs(diff) / 86_400_000);
   const hours = Math.round(Math.abs(diff) / 3_600_000);
   if (r.overdue) return days >= 1 ? `Overdue by ${days} ${days === 1 ? "day" : "days"}` : `Overdue by ${Math.max(hours, 1)} h`;
-  if (r.status === "done" || r.status === "rejected") return `Was due ${fmtDay.format(r.dueAt)}`;
+  if (r.status === "done") return r.completedAt ? `Done ${fmtDay.format(r.completedAt)}` : "Done";
+  if (r.status === "rejected") return r.decidedAt ? `Rejected ${fmtDay.format(r.decidedAt)}` : "Rejected";
   if (hours < 24) return `Due in ${Math.max(hours, 1)} h`;
   return `Due ${fmtDay.format(r.dueAt)}`;
 }
@@ -360,7 +361,22 @@ async function viewRequests(filterId, ref) {
   } else if (detail) {
     detailPane.append(detailSheet(detail, filter.id));
   } else {
-    detailPane.append(h("div", { class: "detail-empty" }, h("p", {}, "Pick a request to see its checklist, the decision and its history.")));
+    detailPane.append(
+      h(
+        "div",
+        { class: "detail-empty" },
+        h("h2", {}, "How a request moves"),
+        h(
+          "ol",
+          { class: "steps" },
+          h("li", {}, h("b", {}, "Staff"), " file it with a checklist."),
+          h("li", {}, h("b", {}, "A manager"), " approves it, or rejects it with a note."),
+          h("li", {}, h("b", {}, "Staff"), " tick every step and finish with a proof photo."),
+          h("li", {}, h("b", {}, "The owner"), " sees it on the dashboard; every step is in the audit log."),
+        ),
+        h("p", {}, "Pick a request on the left to open it."),
+      ),
+    );
   }
   return h("div", { class: `split${ref ? " has-detail" : ""}` }, listPane, detailPane);
 }
@@ -934,7 +950,13 @@ async function viewAlerts() {
   const markBtn = h("button", { type: "button", class: "btn", id: "mark-read", disabled: data.unread === 0 }, "Mark all as read");
   markBtn.addEventListener("click", async () => {
     markBtn.disabled = true;
-    await api("/alerts/read", { method: "POST", body: {} });
+    try {
+      await api("/alerts/read", { method: "POST", body: {} });
+    } catch (err) {
+      markBtn.disabled = false;
+      toast(err.message);
+      return;
+    }
     await refreshUnread();
     await render({ keepFocus: true });
     toast("All alerts marked as read.");

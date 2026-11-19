@@ -39,7 +39,7 @@ export function accessConfigured(env: IdentityEnv): boolean {
   return Boolean(env.ACCESS_TEAM_DOMAIN?.trim() && env.ACCESS_AUD?.trim());
 }
 
-/** ROLE_MAP is JSON: {"ana@shop.com": "owner", "*@shop.com": "staff"}. Exact email wins over the domain wildcard. */
+/** ROLE_MAP is JSON: {"ana@shop.example": "owner", "*@shop.example": "staff"}. Exact email wins over the domain wildcard. */
 export function roleFromMap(roleMapJson: string, email: string): Role | null {
   let map: Record<string, unknown>;
   try {

@@ -28,9 +28,13 @@
     // Outbound alerts: "stub" (record only), "webhook" or "telegram". Demo mode always uses "stub".
     // Secrets for the real adapters are set with `wrangler pages secret put`, never here.
     "ALERT_ADAPTER": "stub",
-    // Abuse limits for the public demo.
+    // Abuse limits for the public demo (ignored in production).
     "SANDBOX_TTL_HOURS": "24",
     "MAX_NEW_SANDBOXES_PER_IP_PER_DAY": "20",
-    "MAX_NEW_SANDBOXES_PER_DAY": "300"
+    "MAX_NEW_SANDBOXES_PER_DAY": "100",
+    // D1 rows the demo may write per UTC day (seeds, actions, purges; index rows included).
+    // The free plan's 100,000 rows/day are shared by every database on the account; keep room for your other apps.
+    "DEMO_ROWS_PER_DAY": "25000",
+    "DEMO_ROWS_PER_IP_PER_DAY": "4000"
   }
 }
