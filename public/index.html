@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ops desk</title>
+  <meta name="description" content="Requests, approvals, checklists with photo proof, alerts and an append-only audit log for a small business. Public demo with generic demo data.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#e4e9ee" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#12181e" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/app.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="top">
+    <div class="top-row">
+      <a class="brand" href="#/requests" aria-label="Ops desk, all requests">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v3H7z M5 5h2v2h10V5h2v16H5z" fill="currentColor"/><path class="lines" d="M8 11h8M8 14.5h8M8 18h5" stroke-width="1.6"/></svg>
+        <span>Ops desk</span>
+      </a>
+      <p class="workspace" id="workspace"></p>
+    </div>
+    <div class="who" id="who"></div>
+  </header>
+  <div class="demo-strip" id="demo-strip" hidden></div>
+  <nav class="nav" id="nav" aria-label="Sections"></nav>
+  <main id="main" class="main" tabindex="-1">
+    <p class="loading">Opening your desk…</p>
+  </main>
+  <footer class="foot">
+    <p>Ops desk demo. Built by Giannis Plevris with Claude Code. Open source under the MIT licence. All names and requests are generic demo data.</p>
+  </footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

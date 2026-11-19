@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="t">
+<title id="t">Sample photo: window table fixed, spirit level reads level</title>
+<rect width="400" height="300" fill="#e8e4dc"/>
+<rect x="0" y="0" width="400" height="150" fill="#cfe0ea"/>
+<rect x="30" y="20" width="160" height="120" fill="#e9f2f7" stroke="#8aa1b0" stroke-width="6"/><rect x="210" y="20" width="160" height="120" fill="#e9f2f7" stroke="#8aa1b0" stroke-width="6"/>
+<rect x="0" y="150" width="400" height="150" fill="#b79d7f"/>
+<rect x="60" y="150" width="280" height="20" rx="3" fill="#8b6a48"/>
+<rect x="84" y="170" width="16" height="110" fill="#6e5236"/><rect x="300" y="170" width="16" height="110" fill="#6e5236"/>
+<rect x="296" y="276" width="24" height="6" rx="2" fill="#3c3c3c"/>
+<rect x="130" y="128" width="140" height="22" rx="4" fill="#f2c94c" stroke="#a2852c" stroke-width="2"/>
+<rect x="182" y="132" width="36" height="14" rx="7" fill="#d7f0c8" stroke="#6f8f5a" stroke-width="2"/>
+<circle cx="200" cy="139" r="4.5" fill="#ffffff" stroke="#6f8f5a" stroke-width="1.5"/>
+<line x1="192" y1="132" x2="192" y2="146" stroke="#6f8f5a" stroke-width="1.5"/><line x1="208" y1="132" x2="208" y2="146" stroke="#6f8f5a" stroke-width="1.5"/>
+<rect x="0.5" y="0.5" width="399" height="299" fill="none" stroke="#000" stroke-opacity=".12"/>
+</svg>

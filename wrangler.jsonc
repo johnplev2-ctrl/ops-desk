@@ -1,0 +1,36 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // Cloudflare Pages project name. Rename it for your own deployment.
+  "name": "ops-desk-demo",
+  "pages_build_output_dir": "./public",
+  // Highest date the pinned local runtime (workerd 1.20260921) supports.
+  "compatibility_date": "2026-09-21",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ops-desk-demo",
+      // Replace with the id printed by `npx wrangler d1 create ops-desk-demo`.
+      // The all-zero placeholder only works for local development.
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    // "true": public demo (per-visitor sandboxes, role switcher, sample photos, outbound alerts stubbed).
+    // "false": production (one shared desk, roles from Cloudflare Access, no role switcher).
+    "DEMO_MODE": "true",
+    // Production only. Your Zero Trust team domain, e.g. "https://acme.cloudflareaccess.com".
+    "ACCESS_TEAM_DOMAIN": "",
+    // Production only. The Access application's AUD tag.
+    "ACCESS_AUD": "",
+    // Production only. JSON map from email (or "*@domain") to role: owner | manager | staff.
+    "ROLE_MAP": "{}",
+    // Outbound alerts: "stub" (record only), "webhook" or "telegram". Demo mode always uses "stub".
+    // Secrets for the real adapters are set with `wrangler pages secret put`, never here.
+    "ALERT_ADAPTER": "stub",
+    // Abuse limits for the public demo.
+    "SANDBOX_TTL_HOURS": "24",
+    "MAX_NEW_SANDBOXES_PER_IP_PER_DAY": "20",
+    "MAX_NEW_SANDBOXES_PER_DAY": "300"
+  }
+}

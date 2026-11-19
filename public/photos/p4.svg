@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="t">
+<title id="t">Sample photo: espresso machine after a deep clean</title>
+<rect width="400" height="300" fill="#e7e3df"/>
+<rect x="0" y="232" width="400" height="68" fill="#7d6a5a"/>
+<rect x="70" y="60" width="260" height="150" rx="12" fill="#c8ced3" stroke="#5f6870" stroke-width="3"/>
+<rect x="70" y="60" width="260" height="34" rx="12" fill="#a9b2b9"/>
+<path d="M92 76 h216" stroke="#eef2f5" stroke-width="5" stroke-linecap="round"/>
+<g transform="translate(120 128)"><rect x="-26" y="0" width="52" height="22" rx="5" fill="#59636b"/><rect x="-40" y="22" width="80" height="12" rx="6" fill="#2f363c"/><rect x="34" y="24" width="44" height="8" rx="4" fill="#2f363c"/></g><g transform="translate(240 128)"><rect x="-26" y="0" width="52" height="22" rx="5" fill="#59636b"/><rect x="-40" y="22" width="80" height="12" rx="6" fill="#2f363c"/><rect x="34" y="24" width="44" height="8" rx="4" fill="#2f363c"/></g>
+<rect x="60" y="210" width="280" height="22" rx="4" fill="#8d979e" stroke="#5f6870" stroke-width="3"/>
+<path d="M300 120 q24 0 24 30 v40" fill="none" stroke="#5f6870" stroke-width="6" stroke-linecap="round"/>
+<path d="M150 98 l18 -14 M250 98 l18 -14" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity=".9"/>
+<rect x="0.5" y="0.5" width="399" height="299" fill="none" stroke="#000" stroke-opacity=".12"/>
+</svg>

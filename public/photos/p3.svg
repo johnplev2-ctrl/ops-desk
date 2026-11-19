@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="t">
+<title id="t">Sample photo: new LED tube fitted in the storeroom ceiling</title>
+<rect width="400" height="300" fill="#3b4650"/>
+<rect width="400" height="70" fill="#56626c"/>
+<path d="M0 70 L120 300 H0z" fill="#46525c"/><path d="M400 70 L280 300 H400z" fill="#46525c"/>
+<path d="M90 92 L20 300 H380 L310 92z" fill="#fff6d6" opacity=".22"/>
+<rect x="80" y="70" width="240" height="14" fill="#9aa6b0"/>
+<rect x="90" y="84" width="220" height="18" rx="9" fill="#fffbe9"/>
+<rect x="90" y="84" width="220" height="18" rx="9" fill="none" stroke="#e8dca8" stroke-width="2"/>
+<rect x="40" y="200" width="90" height="100" fill="#6b5a46"/><rect x="270" y="190" width="100" height="110" fill="#6b5a46"/>
+<rect x="48" y="210" width="74" height="30" fill="#c9b48e"/><rect x="280" y="200" width="80" height="34" fill="#d8c7a4"/>
+<rect x="0.5" y="0.5" width="399" height="299" fill="none" stroke="#000" stroke-opacity=".12"/>
+</svg>

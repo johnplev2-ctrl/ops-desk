@@ -1,0 +1,27 @@
+{
+  "name": "ops-desk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ops desk: requests, approvals, checklist with photo proof, alerts, audit log and CSV export on Cloudflare Pages Functions + D1.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler d1 migrations apply DB --local && wrangler pages dev --ip 127.0.0.1 --port 8788",
+    "test": "playwright test",
+    "test:server": "node scripts/test-server.mjs",
+    "types": "wrangler types --strict-vars false",
+    "typecheck": "wrangler types --strict-vars false && tsc --noEmit",
+    "photos": "node scripts/make-photos.mjs",
+    "shots": "node scripts/shots.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@fontsource-variable/atkinson-hyperlegible-next": "^5.3.0",
+    "@playwright/test": "^1.63.0",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.136.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
